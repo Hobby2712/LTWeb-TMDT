@@ -38,6 +38,32 @@ public class ProductDAOImpl extends ConnectDB implements ProductDAO {
 		}
 		return plist;
 	}
+	
+	@Override
+	public List<Product> getAllProduct() {
+		List<Product> plist = new ArrayList<>();
+		String query = "select * from product";
+		try {
+			Connection conn = super.getConnection();
+			PreparedStatement ps = conn.prepareStatement(query);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				Product product = new Product();
+				product.setId(rs.getInt(1));
+				product.setName(rs.getString(2));
+				product.setPrice(rs.getInt(3));
+				product.setImage(rs.getString(4));
+				product.setDescription(rs.getString(5));
+				product.setQuantity(rs.getInt(6));
+				product.setCateId(rs.getInt(7));
+				product.setStoreId(rs.getInt(8));
+				product.setSold(rs.getInt(10));
+				plist.add(product);
+			}
+		} catch (Exception e) {
+		}
+		return plist;
+	}
 
 	@Override
 	public List<Product> get12RProduct() {
@@ -91,6 +117,33 @@ public class ProductDAOImpl extends ConnectDB implements ProductDAO {
 			e.printStackTrace();
 		}
 		return plist;
+	}
+	
+	@Override
+	public Product getLastestProduct(String pName) {
+		Product product = new Product();
+		String query = "SELECT TOP 1 * FROM product WHERE pName LIKE ? ORDER BY pId DESC";
+		try {
+			Connection conn = super.getConnection();
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1, pName);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				product.setId(rs.getInt(1));
+				product.setName(rs.getString(2));
+				product.setPrice(rs.getInt(3));
+				product.setImage(rs.getString(4));
+				product.setDescription(rs.getString(5));
+				product.setQuantity(rs.getInt(6));
+				product.setCateId(rs.getInt(7));
+				product.setStoreId(rs.getInt(8));
+				product.setSold(rs.getInt(10));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return product;
 	}
 
 	@Override
