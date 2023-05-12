@@ -3,7 +3,6 @@ package APIResource.user;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -19,7 +18,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import DAO.CategoryDAO;
 import DAO.ProductDAO;
@@ -27,7 +25,7 @@ import DaoImpl.CategoryDAOImpl;
 import DaoImpl.ProductDAOImpl;
 import Entity.Product;
 import Entity.User;
-import Entity.API.APIResponse;
+import Entity.api.APIResponse;
 import Util.Constant;
 
 @WebServlet(urlPatterns = {"/api/v1/products/*"})
@@ -37,8 +35,10 @@ public class ProductApi extends HttpServlet{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	ProductDAO productDao = new ProductDAOImpl();
-	CategoryDAO categoryDao = new CategoryDAOImpl();
+	private final ProductDAO productDao;
+	public ProductApi() {
+        this.productDao = new ProductDAOImpl();
+    }
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -49,18 +49,15 @@ public class ProductApi extends HttpServlet{
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.equals("/")) {
             // Xử lý yêu cầu lấy danh sách sản phẩm
-            List<Product> plist = productDao.getAllProduct();
-            APIResponse<List<Product>> response = new APIResponse<>("success", false, "products", plist);
+            APIResponse<List<Product>> response = new APIResponse<>("success", false, "products", productDao.getAllProduct());
             OutputStream outputStream = resp.getOutputStream();
             Gson gson = new Gson();
             outputStream.write(gson.toJson(response).getBytes());
             outputStream.flush();
         } else {
             // Xử lý yêu cầu lấy thông tin sản phẩm có ID tương ứng
-            String[] pathParts = pathInfo.split("/");
-            if (pathParts.length > 1) {
-                String productId = pathParts[1];
-                Product product = productDao.getProductByID(productId);
+            if (pathInfo.split("/").length > 1) {
+                Product product = productDao.getProductByID(pathInfo.split("/")[1]);
                 if (product != null) {
                     APIResponse<Product> response = new APIResponse<>("success", false, "product", product);
                     OutputStream outputStream = resp.getOutputStream();
@@ -131,8 +128,8 @@ public class ProductApi extends HttpServlet{
 		ServletFileUpload servletFileUpload = new ServletFileUpload(diskFileItemFactory);
 		servletFileUpload.setHeaderEncoding("UTF-8");
 		try {
-			HttpSession session = req.getSession();
-			User u = (User) session.getAttribute("acc");
+//			HttpSession session = req.getSession();
+//			User u = (User) session.getAttribute("acc");
 			resp.setContentType("application/json");
 			resp.setCharacterEncoding("UTF-8");
 			req.setCharacterEncoding("UTF-8");
@@ -167,10 +164,9 @@ public class ProductApi extends HttpServlet{
 			}
 			productDao.insertProduct(product);
 			// Lấy sản phẩm vừa được insert vào database
-			Product insertedProduct = productDao.getLastestProduct(product.getName());
-			//product.setId(1);
-			if(insertedProduct != null) {
-				APIResponse<Product> response = new APIResponse<>("Thêm sản phẩm thành công", false, "product", insertedProduct);
+			
+			if(productDao.getLastestProduct(product.getName()) != null) {
+				APIResponse<Product> response = new APIResponse<>("Thêm sản phẩm thành công", false, "product", productDao.getLastestProduct(product.getName()));
 				OutputStream outputStream = resp.getOutputStream();
 			    Gson gson = new Gson();
 			    outputStream.write(gson.toJson(response).getBytes());
@@ -211,124 +207,142 @@ public class ProductApi extends HttpServlet{
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		    // Lấy id sản phẩm từ đường dẫn URL
-		    String pathInfo = req.getPathInfo();
-		    if (pathInfo == null || pathInfo.equals("/")) {
-		        resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "URL không đúng");
-		        return;
-		    }
-		    int id;
-		    try {
-		        id = Integer.parseInt(pathInfo.substring(1));
-		    } catch (NumberFormatException e) {
-		        resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Sai format");
-		        return;
-		    }
-		    String productId = Integer.toString(id);
-		    Product existingProduct = productDao.getProductByID(productId);
-		    if (existingProduct == null) {
-		        resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Sản phẩm không tồn tại hoặc đã bị xóa");
-		        return;
-		    }
+		resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        req.setCharacterEncoding("UTF-8");
+	    // Lấy id sản phẩm từ đường dẫn URL
+	    String pathInfo = req.getPathInfo();
+	    if (pathInfo == null || pathInfo.equals("/")) {
+	    	resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	        APIResponse<String> response = new APIResponse<>("URL không đúng", true);
+	        OutputStream outputStream = resp.getOutputStream();
+	        Gson gson = new Gson();
+	        outputStream.write(gson.toJson(response).getBytes());
+	        outputStream.flush();
+	        return;
+	    }
+	    int id;
+	    try {
+	        id = Integer.parseInt(pathInfo.substring(1));
+	    } catch (NumberFormatException e) {
+	    	resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	        APIResponse<String> response = new APIResponse<>("Sai format", true);
+	        OutputStream outputStream = resp.getOutputStream();
+	        Gson gson = new Gson();
+	        outputStream.write(gson.toJson(response).getBytes());
+	        outputStream.flush();
+	        return;
+	    }
+	    Product existingProduct = productDao.getProductByID(Integer.toString(id));
+	    if (existingProduct == null) {
+	    	resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+	        APIResponse<String> response = new APIResponse<>("Sản phẩm không tồn tại hoặc đã bị xóa", true);
+	        OutputStream outputStream = resp.getOutputStream();
+	        Gson gson = new Gson();
+	        outputStream.write(gson.toJson(response).getBytes());
+	        outputStream.flush();
+	        return;
+	    }
 
-		    // Lấy thông tin sản phẩm từ request body
-		    Product editProduct = new Product();
-		    DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
-		    ServletFileUpload servletFileUpload = new ServletFileUpload(diskFileItemFactory);
-		    servletFileUpload.setHeaderEncoding("UTF-8");
-		    try {
-		        HttpSession session = req.getSession();
-		        User u = (User) session.getAttribute("acc");
-		        resp.setContentType("application/json");
-		        resp.setCharacterEncoding("UTF-8");
-		        req.setCharacterEncoding("UTF-8");
-		        List<FileItem> items = servletFileUpload.parseRequest((HttpServletRequest) req);
-		        for (FileItem item : items) {
-		            if (item.getFieldName().equals("name")) {
-		            	editProduct.setName(item.getString("UTF-8"));
-		            } else if (item.getFieldName().equals("price")) {
-		            	editProduct.setPrice(Integer.parseInt(item.getString("UTF-8")));
-		            } else if (item.getFieldName().equals("image")) {
-		                String originalFileName = item.getName();
-		                int index = originalFileName.lastIndexOf(".");
-		                String ext = originalFileName.substring(index + 1);
-		                String fileName = System.currentTimeMillis() + "." + ext;
-		                File file = new File(Constant.DIR + "/uploads/product/" + fileName);
-		                item.write(file);
-		                editProduct.setImage("/uploads/product/" + fileName);
-		            }
-		            if (item.getFieldName().equals("description")) {
-		            	editProduct.setDescription(item.getString("UTF-8"));
-		            }
-		            if (item.getFieldName().equals("quantity")) {
-		            	editProduct.setQuantity(Integer.parseInt(item.getString("UTF-8")));
-		            }
-		            if (item.getFieldName().equals("categoryId")) {
-		            	editProduct.setCateId(Integer.parseInt(item.getString("UTF-8")));
-		            }
-		            if (item.getFieldName().equals("storeId")) {
-		            	editProduct.setStoreId(Integer.parseInt(item.getString("UTF-8")));
-		            }
-		        }
-		        if (editProduct.getImage() != null) {
-					// XOA ANH CU DI
-					String fileName = existingProduct.getImage();
-					File file = new File(Constant.DIR + fileName);
-					if (file.exists()) {
-						file.delete();
-					}
-				}else {
-					editProduct.setImage(existingProduct.getImage());
+	    // Lấy thông tin sản phẩm từ request body
+	    Product editProduct = new Product();
+	    DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+	    ServletFileUpload servletFileUpload = new ServletFileUpload(diskFileItemFactory);
+	    servletFileUpload.setHeaderEncoding("UTF-8");
+	    try {
+//		        HttpSession session = req.getSession();
+//		        User u = (User) session.getAttribute("acc");
+	        
+	        List<FileItem> items = servletFileUpload.parseRequest((HttpServletRequest) req);
+	        for (FileItem item : items) {
+	            if (item.getFieldName().equals("name")) {
+	            	editProduct.setName(item.getString("UTF-8"));
+	            } else if (item.getFieldName().equals("price")) {
+	            	editProduct.setPrice(Integer.parseInt(item.getString("UTF-8")));
+	            } else if (item.getFieldName().equals("image")) {
+	                String originalFileName = item.getName();
+	                int index = originalFileName.lastIndexOf(".");
+	                String ext = originalFileName.substring(index + 1);
+	                String fileName = System.currentTimeMillis() + "." + ext;
+	                File file = new File(Constant.DIR + "/uploads/product/" + fileName);
+	                item.write(file);
+	                editProduct.setImage("/uploads/product/" + fileName);
+	            }
+	            if (item.getFieldName().equals("description")) {
+	            	editProduct.setDescription(item.getString("UTF-8"));
+	            }
+	            if (item.getFieldName().equals("quantity")) {
+	            	editProduct.setQuantity(Integer.parseInt(item.getString("UTF-8")));
+	            }
+	            if (item.getFieldName().equals("categoryId")) {
+	            	editProduct.setCateId(Integer.parseInt(item.getString("UTF-8")));
+	            }
+	            if (item.getFieldName().equals("storeId")) {
+	            	editProduct.setStoreId(Integer.parseInt(item.getString("UTF-8")));
+	            }
+	        }
+	        if (editProduct.getImage() != null) {
+				// XOA ANH CU DI
+				String fileName = existingProduct.getImage();
+				File file = new File(Constant.DIR + fileName);
+				if (file.exists()) {
+					file.delete();
 				}
+			}else {
+				editProduct.setImage(existingProduct.getImage());
+			}
 
-		        // Cập nhật thông tin sản phẩm vào database
-		        editProduct.setId(existingProduct.getId());
-		        productDao.editProduct(editProduct);
+	        // Cập nhật thông tin sản phẩm vào database
+	        editProduct.setId(existingProduct.getId());
+	        productDao.editProduct(editProduct);
 
-		        // Trả về thông tin sản phẩm vừa cập nhật
-		        Product updatedProduct = productDao.getProductByID(productId);
-		        if (updatedProduct != null) {
-		            APIResponse<Product> response = new APIResponse<>("Cập nhật sản phẩm thành công", false, "product", updatedProduct);
-		            OutputStream outputStream = resp.getOutputStream();
-		            Gson gson = new Gson();
-		            outputStream.write(gson.toJson(response).getBytes());
-		            outputStream.flush();
-		        } else {
-		            APIResponse<String> response = new APIResponse<>("Cập nhật sản phẩm thất bại", true);
-		         // Chuyển đổi đối tượng JSON thành chuỗi và trả về cho client
-					OutputStream outputStream = resp.getOutputStream();
-				    Gson gson = new Gson();
-				    outputStream.write(gson.toJson(response).getBytes());
-				    outputStream.flush();
-				}
-				
-			} catch (FileUploadException e) {
-				e.printStackTrace();
-				// Tạo đối tượng JSON chứa thông tin lỗi
-				APIResponse<String> response = new APIResponse<>("Lỗi khi upload file", true);
-				
-				// Chuyển đổi đối tượng JSON thành chuỗi và trả về cho client
-				OutputStream outputStream = resp.getOutputStream();
-			    Gson gson = new Gson();
-			    outputStream.write(gson.toJson(response).getBytes());
-			    outputStream.flush();
-			} catch (Exception e) {
-				e.printStackTrace();
-				// Tạo đối tượng JSON chứa thông tin lỗi
-				APIResponse<String> response = new APIResponse<>("Có lỗi trong quá trình cập nhật", true);
-				
-				// Chuyển đổi đối tượng JSON thành chuỗi và trả
+	        // Trả về thông tin sản phẩm vừa cập nhật
+	        Product updatedProduct = productDao.getProductByID(Integer.toString(existingProduct.getId()));
+	        if (updatedProduct != null) {
+	            APIResponse<Product> response = new APIResponse<>("Cập nhật sản phẩm thành công", false, "product", updatedProduct);
+	            OutputStream outputStream = resp.getOutputStream();
+	            Gson gson = new Gson();
+	            outputStream.write(gson.toJson(response).getBytes());
+	            outputStream.flush();
+	        } else {
+	            APIResponse<String> response = new APIResponse<>("Cập nhật sản phẩm thất bại", true);
+	         // Chuyển đổi đối tượng JSON thành chuỗi và trả về cho client
 				OutputStream outputStream = resp.getOutputStream();
 			    Gson gson = new Gson();
 			    outputStream.write(gson.toJson(response).getBytes());
 			    outputStream.flush();
 			}
+			
+		} catch (FileUploadException e) {
+			e.printStackTrace();
+			// Tạo đối tượng JSON chứa thông tin lỗi
+			APIResponse<String> response = new APIResponse<>("Lỗi khi upload file", true);
+			
+			// Chuyển đổi đối tượng JSON thành chuỗi và trả về cho client
+			OutputStream outputStream = resp.getOutputStream();
+		    Gson gson = new Gson();
+		    outputStream.write(gson.toJson(response).getBytes());
+		    outputStream.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+			// Tạo đối tượng JSON chứa thông tin lỗi
+			APIResponse<String> response = new APIResponse<>("Có lỗi trong quá trình cập nhật", true);
+			
+			// Chuyển đổi đối tượng JSON thành chuỗi và trả
+			OutputStream outputStream = resp.getOutputStream();
+		    Gson gson = new Gson();
+		    outputStream.write(gson.toJson(response).getBytes());
+		    outputStream.flush();
+		}
 		           
 
 	}
 
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        req.setCharacterEncoding("UTF-8");
 	    String pathInfo = req.getPathInfo();
 	    if (pathInfo == null || pathInfo.equals("/")) {
 	        // Nếu không có id sản phẩm được cung cấp trong đường dẫn, trả về lỗi 400 Bad Request
