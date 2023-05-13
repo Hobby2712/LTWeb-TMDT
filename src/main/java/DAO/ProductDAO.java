@@ -32,4 +32,8 @@ public interface ProductDAO {
 	List<Product> pagingSearchByStore(int StoreId, String txtSearch, int index);
 	List<Product> getAllProduct();
 	Product getLastestProduct(String pName);
+	boolean editApiProduct(Product p);
+	List<Product> searchByNameAndStore(String txtSearch, String storeId);
+	Product getLastestProduct();
+	Product getBestSeller();
 }
