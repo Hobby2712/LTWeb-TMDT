@@ -95,7 +95,7 @@ public class ProductApi extends HttpServlet {
 		} else {
 			// Xử lý yêu cầu lấy thông tin sản phẩm có ID tương ứng
 			if (pathInfo.split("/").length > 1) {
-				if (pathInfo.equals("/latest-product")) {
+				if (pathInfo.equals("/latest")) {
 					// Lấy sản phẩm mới nhất
 					APIResponse<Product> response = new APIResponse<>("success", false, "product",
 							productDao.getLastestProduct());
