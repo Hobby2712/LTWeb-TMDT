@@ -236,6 +236,22 @@ public class OrderDAOImpl extends ConnectDB implements OrderDAO {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public boolean updateOrderStatusApi(int id, int status) {
+		String query = "update orderdetail\r\n" + "set [status]=?\r\n" + "where id=?";
+		try {
+			Connection conn = super.getConnection();
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, status);
+			ps.setInt(2, id);
+			ps.executeUpdate();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 	public static void main(String[] args) {
 		OrderDAO dao = new OrderDAOImpl();

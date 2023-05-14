@@ -19,7 +19,7 @@ import DAO.UserDAO;
 import DaoImpl.UserDAOImpl;
 import Entity.Product;
 import Entity.User;
-import Entity.API.APIResponse;
+import Entity.api.APIResponse;
 
 @WebServlet(urlPatterns = {"/api/v1/login/*"})
 public class LoginApi extends HttpServlet{
