@@ -29,10 +29,10 @@ public class EditProfileController extends HttpServlet {
 		HttpSession session = req.getSession();
 		User u = (User) session.getAttribute("acc");
 		String name = req.getParameter("name");
-		String adress = req.getParameter("adress");
+		String address = req.getParameter("address");
 		String phone = req.getParameter("phone");
 		
-		dao.updateProfile(name, adress, phone, u.getId());
+		dao.updateProfile(name, address, phone, u.getId());
 		session.setAttribute("acc", dao.login(u.getUserName(), u.getPass()));
 		resp.sendRedirect("/Web/views/web/profile.jsp");
 	}
