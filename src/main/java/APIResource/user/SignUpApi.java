@@ -21,7 +21,7 @@ import Entity.User;
 import Entity.API.APIResponse;
 
 @WebServlet(urlPatterns = {"/api/v1/signup/*"})
-public class SignupApi extends HttpServlet{
+public class SignUpApi extends HttpServlet{
 
 	/**
 	 * 

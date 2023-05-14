@@ -72,7 +72,7 @@ public class LoginApi extends HttpServlet{
 		}
 	}catch (Exception e) {
         e.printStackTrace();
-        resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error occurred while processing request");
+        resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi gì đó khi bắt request");
     }
     }
 
