@@ -44,7 +44,7 @@ public class VerifyChangePassController extends HttpServlet {
 		
 		
 		if (!otp.equals(otp_send)) {
-			request.setAttribute("mess", "Mã OTP sai!");
+			//request.setAttribute("mess", "Mã OTP sai!");
 			request.setAttribute("user", user);
 			request.setAttribute("email", email);
 			request.setAttribute("pass", pass);

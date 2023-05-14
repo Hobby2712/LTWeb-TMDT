@@ -24,6 +24,7 @@ public class SignUpController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	CategoryDAO category = new CategoryDAOImpl();
+	
 
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -55,6 +56,7 @@ public class SignUpController extends HttpServlet {
 			} else if (u == null) {
 				// dc signup
 				String otp = dao.getRandom();
+				
 				request.setAttribute("user", user);
 				request.setAttribute("pass", pass);
 				request.setAttribute("email", email);
@@ -90,4 +92,6 @@ public class SignUpController extends HttpServlet {
 		return "Short description";
 	}
 
+
+	
 }
