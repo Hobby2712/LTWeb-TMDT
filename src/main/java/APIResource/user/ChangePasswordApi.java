@@ -12,14 +12,10 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
-import DAO.CartDAO;
-import DAO.CategoryDAO;
 import DAO.UserDAO;
-import DaoImpl.CartDAOImpl;
-import DaoImpl.CategoryDAOImpl;
 import DaoImpl.UserDAOImpl;
 import Entity.User;
-import Entity.API.APIResponse;
+import Entity.api.APIResponse;
 
 @WebServlet(urlPatterns = { "/api/v1/changePassword/*" })
 public class ChangePasswordApi extends HttpServlet {

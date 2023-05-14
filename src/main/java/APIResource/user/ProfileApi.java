@@ -29,7 +29,7 @@ import DaoImpl.ProductDAOImpl;
 import DaoImpl.UserDAOImpl;
 import Entity.Product;
 import Entity.User;
-import Entity.API.APIResponse;
+import Entity.api.APIResponse;
 import Util.Constant;
 
 @WebServlet(urlPatterns = {"/api/v1/profile/*"})
