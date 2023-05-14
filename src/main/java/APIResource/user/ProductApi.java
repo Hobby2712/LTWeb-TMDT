@@ -326,7 +326,6 @@ public class ProductApi extends HttpServlet {
 		String pathInfo = req.getPathInfo();
 		if (pathInfo == null || pathInfo.equals("/")) {
 			// Nếu không có id sản phẩm được cung cấp trong đường dẫn, trả về lỗi 400 Bad
-			// Request
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			APIResponse<String> response = new APIResponse<>("URL không đúng", true);
 			sendJsonResponse(resp, response);
