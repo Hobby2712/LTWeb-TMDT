@@ -3,6 +3,7 @@ package DaoImpl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,14 +121,15 @@ public class ProductDAOImpl extends ConnectDB implements ProductDAO {
 	}
 	
 	@Override
-	public Product getLastestProduct() {
-		String query = "SELECT Top 1 * FROM product \r\n" + "order by pId DESC";
+	public List<Product> getLastestProduct() {
+		List<Product> plist = new ArrayList<>();
+		String query = "SELECT Top 8 * FROM product \r\n" + "order by pId DESC";
 		try {
 			Connection conn = super.getConnection();
 			PreparedStatement ps = conn.prepareStatement(query);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Product(rs.getInt(1),
+				plist.add(new Product(rs.getInt(1),
 						rs.getString(2), 
 						rs.getInt(3), 
 						rs.getString(4), 
@@ -135,40 +137,57 @@ public class ProductDAOImpl extends ConnectDB implements ProductDAO {
 						rs.getInt(6), 
 						rs.getInt(7), 
 						rs.getInt(8), 
-						rs.getInt(10));
+						rs.getInt(10)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
-		return null;
+		return plist;
 	}
 	
 	@Override
 	public Product getLastestProduct(String pName) {
-		Product product = new Product();
-		String query = "SELECT TOP 1 * FROM product WHERE pName LIKE ? ORDER BY pId DESC";
-		try {
-			Connection conn = super.getConnection();
-			PreparedStatement ps = conn.prepareStatement(query);
-			ps.setString(1, pName);
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				product.setId(rs.getInt(1));
-				product.setName(rs.getString(2));
-				product.setPrice(rs.getInt(3));
-				product.setImage(rs.getString(4));
-				product.setDescription(rs.getString(5));
-				product.setQuantity(rs.getInt(6));
-				product.setCateId(rs.getInt(7));
-				product.setStoreId(rs.getInt(8));
-				product.setSold(rs.getInt(10));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-		return product;
+	    String query = "SELECT TOP 1 * FROM product ORDER BY pId DESC";
+	    Connection conn = null;
+	    PreparedStatement ps = null;
+	    ResultSet rs = null;
+	    try {
+	        conn = super.getConnection();
+	        ps = conn.prepareStatement(query);
+	        rs = ps.executeQuery();
+	        while (rs.next()) {
+	            String productName = rs.getString(2);
+	            if (!rs.wasNull() && productName.equals(pName)) { // kiểm tra giá trị cột tên sản phẩm có khác null và có khớp với tham số được truyền vào hay không
+	            	return new Product(rs.getInt(1),
+	                        rs.getString(2), 
+	                        rs.getInt(3), 
+	                        rs.getString(4), 
+	                        rs.getString(5), 
+	                        rs.getInt(6), 
+	                        rs.getInt(7), 
+	                        rs.getInt(8), 
+	                        rs.getInt(10));
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) {
+	                rs.close();
+	            }
+	            if (ps != null) {
+	                ps.close();
+	            }
+	            if (conn != null) {
+	                conn.close();
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return null;
 	}
 
 	@Override
@@ -226,14 +245,15 @@ public class ProductDAOImpl extends ConnectDB implements ProductDAO {
 	}
 	
 	@Override
-	public Product getBestSeller() {
-		String query = "SELECT Top 1 * FROM product \r\n" + "order by sold DESC";
+	public List<Product> getBestSeller() {
+		List<Product> plist = new ArrayList<>();
+		String query = "SELECT Top 8 * FROM product \r\n" + "order by sold DESC";
 		try {
 			Connection conn = super.getConnection();
 			PreparedStatement ps = conn.prepareStatement(query);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Product(rs.getInt(1),
+				plist.add(new Product(rs.getInt(1),
 						rs.getString(2), 
 						rs.getInt(3), 
 						rs.getString(4), 
@@ -241,13 +261,13 @@ public class ProductDAOImpl extends ConnectDB implements ProductDAO {
 						rs.getInt(6), 
 						rs.getInt(7), 
 						rs.getInt(8), 
-						rs.getInt(10));
+						rs.getInt(10)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
-		return null;
+		return plist;
 	}
 
 	@Override

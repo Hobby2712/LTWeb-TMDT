@@ -34,6 +34,6 @@ public interface ProductDAO {
 	Product getLastestProduct(String pName);
 	boolean editApiProduct(Product p);
 	List<Product> searchByNameAndStore(String txtSearch, String storeId);
-	Product getLastestProduct();
-	Product getBestSeller();
+	List<Product> getLastestProduct();
+	List<Product> getBestSeller();
 }
