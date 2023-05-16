@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 import DAO.OrderDAO;
 import DaoImpl.OrderDAOImpl;
 import Entity.OrderDetails;
-import Entity.API.APIResponse;
+import Entity.api.APIResponse;
 
 @WebServlet(urlPatterns = { "/api/v1/shipper/orders" })
 public class ShipperOrderApi extends HttpServlet{

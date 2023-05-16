@@ -17,7 +17,7 @@ import DAO.OrderDAO;
 
 import DaoImpl.OrderDAOImpl;
 import Entity.OrderDetails;
-import Entity.API.APIResponse;
+import Entity.api.APIResponse;
 
 @WebServlet(urlPatterns = { "/api/v1/orders", "/api/v1/orders/*" })
 public class OrderApi extends HttpServlet {
