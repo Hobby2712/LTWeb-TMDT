@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 import DAO.UserDAO;
 import DaoImpl.UserDAOImpl;
 import Entity.User;
-import Entity.API.APIResponse;
+import Entity.api.APIResponse;
 
 @WebServlet(urlPatterns = { "/api/v1/changePassword/*" })
 public class ChangePasswordApi extends HttpServlet {

@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 import DAO.CategoryDAO;
 import DaoImpl.CategoryDAOImpl;
 import Entity.Category;
-import Entity.API.APIResponse;
+import Entity.api.APIResponse;
 
 @WebServlet(urlPatterns = "/api/v1/categories/*")
 public class CategoryApi extends HttpServlet{

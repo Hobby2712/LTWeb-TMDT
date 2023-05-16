@@ -27,7 +27,7 @@ import DaoImpl.CategoryDAOImpl;
 import DaoImpl.ProductDAOImpl;
 import Entity.Product;
 import Entity.User;
-import Entity.API.APIResponse;
+import Entity.api.APIResponse;
 import Util.Constant;
 
 @WebServlet(urlPatterns = { "/api/v1/products", "/api/v1/products/*" })
@@ -97,12 +97,12 @@ public class ProductApi extends HttpServlet {
 			if (pathInfo.split("/").length > 1) {
 				if (pathInfo.equals("/latest")) {
 					// Lấy sản phẩm mới nhất
-					APIResponse<Product> response = new APIResponse<>("success", false, "product",
+					APIResponse<List<Product>> response = new APIResponse<>("success", false, "product", 
 							productDao.getLastestProduct());
 					sendJsonResponse(resp, response);
 				} else if (pathInfo.equals("/best-seller")) {
 					// Lấy sản phẩm bán chạy nhất
-					APIResponse<Product> response = new APIResponse<>("success", false, "product",
+					APIResponse<List<Product>> response = new APIResponse<>("success", false, "product",
 							productDao.getBestSeller());
 					sendJsonResponse(resp, response);
 				} else {
