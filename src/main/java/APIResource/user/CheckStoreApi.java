@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import DAO.StoreDAO;
 import DaoImpl.StoreDAOImpl;
 import Entity.Store;
-import Entity.api.APIResponse;
+import Entity.API.APIResponse;
 
 @WebServlet(urlPatterns = {"/api/v1/stores"})
 public class CheckStoreApi extends HttpServlet{
