@@ -31,7 +31,7 @@ public class VerifySignUpApi extends HttpServlet{
 	
 	protected void processRequest(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		resp.setContentType("text/html");
+		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
 		req.setCharacterEncoding("UTF-8");
 

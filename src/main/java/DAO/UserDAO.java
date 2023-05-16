@@ -20,4 +20,9 @@ public interface UserDAO {
 	int countAccount();
 	int countSearch(String txtSearch);
 	List<User> searchByName(String txtSearch, int index);
+	String getUsernameById(String index);
+	String getEmailById(String index);
+	String getPasswordById(String index);
+	List<String> getAllEmail();
+	String getUsernameByEmail(String index);
 }

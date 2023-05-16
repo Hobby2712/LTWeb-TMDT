@@ -72,7 +72,7 @@ public class SignupApi extends HttpServlet{
 					//req.setAttribute("cancel", "/Web/loginAccount");
 					
 					
-					APIResponse<User> response = new APIResponse<>("Đã gửi OTP thành công", false);
+					APIResponse<String> response = new APIResponse<>("Đã gửi OTP thành công", false,"otp",otp);
 					OutputStream outputStream = resp.getOutputStream();
 				    Gson gson = new Gson();
 				    outputStream.write(gson.toJson(response).getBytes());

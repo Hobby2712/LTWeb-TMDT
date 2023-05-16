@@ -18,10 +18,10 @@ import com.google.gson.Gson;
 import DAO.UserDAO;
 import DaoImpl.UserDAOImpl;
 import Entity.User;
-import Entity.api.APIResponse;
+import Entity.API.APIResponse;
 
-@WebServlet(urlPatterns = {"/api/v1/verifyChangePass/*"})
-public class VerifyChangePassApi extends HttpServlet{
+@WebServlet(urlPatterns = {"/api/v1/verifyForgotPass/*"})
+public class VerifyForgotPassApi extends HttpServlet{
 
 	/**
 	 * 
@@ -35,10 +35,11 @@ public class VerifyChangePassApi extends HttpServlet{
 		resp.setCharacterEncoding("UTF-8");
 		req.setCharacterEncoding("UTF-8");
 		
-		String id = req.getParameter("id");
-		//String email = req.getParameter(u.getEmailById(id));
-		String user = req.getParameter(u.getUsernameById(id));
-		String pass = req.getParameter(u.getPasswordById(id));
+		
+		String email = req.getParameter("email");
+		String newpass = req.getParameter("newpass");
+		String user = req.getParameter(u.getUsernameByEmail(email));
+		//String pass = req.getParameter("pass");
 		String otp = req.getParameter("otp");
 		String otp_send = req.getParameter("otpSend");
 		
@@ -48,23 +49,19 @@ public class VerifyChangePassApi extends HttpServlet{
 			OutputStream outputStream = resp.getOutputStream();
 		    Gson gson = new Gson();
 		    outputStream.write(gson.toJson(response1).getBytes());
-		    outputStream.flush();
-		    
-		    req.setAttribute("id", id);
+		    outputStream.flush();    
+		   // req.setAttribute("id", id);
 			req.setAttribute("user", user);
-        	req.setAttribute("pass", pass);
-        	//req.setAttribute("email", email);
+        	req.setAttribute("newpass", newpass);
+        	req.setAttribute("email", email);
         	req.setAttribute("otpSend", otp_send);
         	//req.setAttribute("action", "verify");
         	//req.setAttribute("cancel", "/Web/loginAccount");
 			//req.getRequestDispatcher("/views/web/otp.jsp").forward(req, resp);
-			
-			
 		    
 		} else {
-			u.changPass(user, pass);
-			
-			APIResponse<String> response = new APIResponse<>("Thay đổi mật khẩu thành công", false, "newpass", pass);
+			u.changPass(user,newpass);
+			APIResponse<String> response = new APIResponse<>("OTP trùng khớp, đã đổi mật khẩu", false);
 			OutputStream outputStream = resp.getOutputStream();
 		    Gson gson = new Gson();
 		    outputStream.write(gson.toJson(response).getBytes());

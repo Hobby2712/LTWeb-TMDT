@@ -2,6 +2,7 @@ package APIResource.manager;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -107,8 +108,12 @@ public class StatisticApi extends HttpServlet{
 			        if(count % size !=0) {
 			        	endPage++;
 			        }
+			        Map<String, Object> map = new HashMap<>();
+			        map.put("tag", index);
+			        map.put("endPage", endPage);
+			        
 			        APIResponse<Map<String, Object>> response = new APIResponse<>("success", false, "",
-			                Map.of("tag", index, "endPage", endPage));
+			                map);
 			        sendJsonResponse(resp, response);
 				} else if (pathInfo.equals("/chart")){
 					String store = req.getParameter("store");

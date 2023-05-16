@@ -3,6 +3,7 @@ package APIResource.user;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -10,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -17,18 +19,24 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import com.google.gson.Gson;
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 
+import DAO.CategoryDAO;
 import DAO.ProductDAO;
+import DaoImpl.CategoryDAOImpl;
 import DaoImpl.ProductDAOImpl;
 import Entity.Product;
+import Entity.User;
 import Entity.api.APIResponse;
 import Util.Constant;
 
 @WebServlet(urlPatterns = { "/api/v1/products", "/api/v1/products/*" })
 public class ProductApi extends HttpServlet {
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-	
 	private final ProductDAO productDao;
 
 	public ProductApi() {
@@ -92,7 +100,7 @@ public class ProductApi extends HttpServlet {
 			if (pathInfo.split("/").length > 1) {
 				if (pathInfo.equals("/latest")) {
 					// Lấy sản phẩm mới nhất
-					APIResponse<List<Product>> response = new APIResponse<>("success", false, "products",
+					APIResponse<List<Product>> response = new APIResponse<>("success", false, "products", 
 							productDao.getLastestProduct());
 					sendJsonResponse(resp, response);
 				} else if (pathInfo.equals("/best-seller")) {
@@ -101,16 +109,15 @@ public class ProductApi extends HttpServlet {
 							productDao.getBestSeller());
 					sendJsonResponse(resp, response);
 				} else {
-					int id;
 					try {
-						id = Integer.parseInt(pathInfo.substring(1));
+						int id = Integer.parseInt(pathInfo.substring(1));
 					} catch (NumberFormatException e) {
 						resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 						APIResponse<String> response = new APIResponse<>("Sai format", true);
 						sendJsonResponse(resp, response);
 						return;
 					}
-					Product product = productDao.getProductByID(Integer.toString(id));
+					Product product = productDao.getProductByID(pathInfo.split("/")[1]);
 					if (product != null) {
 						APIResponse<Product> response = new APIResponse<>("success", false, "product", product);
 						sendJsonResponse(resp, response);
@@ -124,6 +131,12 @@ public class ProductApi extends HttpServlet {
 		}
 	}
 
+	/*
+	 * Product p1 = new Product(1, "Product 1", 15000, "image1.jpg",
+	 * "this is product 1 test", 40, 1, 2, 10); Product p2 = new Product(2,
+	 * "Product 2", 180000, "image2.jpg", "this is product 2 test again", 40, 3, 2,
+	 * 10); List<Product> plist = new ArrayList<>(); plist.add(p2); plist.add(p1);
+	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Product product = new Product();
@@ -131,6 +144,8 @@ public class ProductApi extends HttpServlet {
 		ServletFileUpload servletFileUpload = new ServletFileUpload(diskFileItemFactory);
 		servletFileUpload.setHeaderEncoding("UTF-8");
 		try {
+//			HttpSession session = req.getSession();
+//			User u = (User) session.getAttribute("acc");
 			resp.setContentType("application/json");
 			resp.setCharacterEncoding("UTF-8");
 			req.setCharacterEncoding("UTF-8");
@@ -166,9 +181,10 @@ public class ProductApi extends HttpServlet {
 			}
 			productDao.insertProduct(product);
 			// Lấy sản phẩm vừa được insert vào database
-			Product newProduct = productDao.getLastestProduct(product.getName());
-			if (newProduct != null) {
-				APIResponse<Product> response = new APIResponse<>("Thêm sản phẩm thành công", false, "product", newProduct);
+
+			if (productDao.getLastestProduct(product.getName()) != null) {
+				APIResponse<Product> response = new APIResponse<>("Thêm sản phẩm thành công", false, "product",
+						productDao.getLastestProduct(product.getName()));
 				sendJsonResponse(resp, response);
 			} else {
 				// Tạo đối tượng JSON chứa thông tin lỗi
