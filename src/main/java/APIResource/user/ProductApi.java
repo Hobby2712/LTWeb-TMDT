@@ -67,6 +67,9 @@ public class ProductApi extends HttpServlet {
 			} else if (categoryId2 != null && !categoryId2.isEmpty()) {
 				// Lấy danh sách sản phẩm theo danh mục
 				productList = productDao.getProductByCID2(categoryId2);
+			} else if (storeId != null && !storeId.isEmpty()) {
+				// Lấy danh sách sản phẩm theo store
+				productList = productDao.getProductByStoreId(Integer.parseInt(storeId));
 			} else {
 				// Lấy danh sách tất cả sản phẩm
 				productList = productDao.getAllProduct();

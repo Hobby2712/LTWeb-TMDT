@@ -36,4 +36,5 @@ public interface ProductDAO {
 	List<Product> searchByNameAndStore(String txtSearch, String storeId);
 	List<Product> getLastestProduct();
 	List<Product> getBestSeller();
+	List<Product> getProductByStoreId(int storeId);
 }

@@ -705,6 +705,51 @@ public class ProductDAOImpl extends ConnectDB implements ProductDAO {
 		return plist;
 	}
 	
+	@Override
+	public List<Product> getProductByStoreId(int storeId) {
+		List<Product> plist = new ArrayList<>();
+		String query = "select * from product where storeId= ?";
+		Connection conn = null;
+	    PreparedStatement ps = null;
+	    ResultSet rs = null;
+	    try {
+	        conn = super.getConnection();
+	        ps = conn.prepareStatement(query);
+			ps.setInt(1, storeId);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				Product product = new Product();
+				product.setId(rs.getInt(1));
+				product.setName(rs.getString(2));
+				product.setPrice(rs.getInt(3));
+				product.setImage(rs.getString(4));
+				product.setDescription(rs.getString(5));
+				product.setQuantity(rs.getInt(6));
+				product.setCateId(rs.getInt(7));
+				product.setStoreId(rs.getInt(8));
+				product.setSold(rs.getInt(10));
+				plist.add(product);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+	        try {
+	            if (rs != null) {
+	                rs.close();
+	            }
+	            if (ps != null) {
+	                ps.close();
+	            }
+	            if (conn != null) {
+	                conn.close();
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+		return plist;
+	}
+	
 	public static void main(String[] args) {
 		ProductDAO p = new ProductDAOImpl();
 		System.out.print(p.getProductByID(Integer.toString(1)));
