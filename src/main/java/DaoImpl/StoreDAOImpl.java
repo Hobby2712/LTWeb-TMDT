@@ -3,9 +3,11 @@ package DaoImpl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import Connection.ConnectDB;
 import DAO.StoreDAO;
+import Entity.Store;
 
 public class StoreDAOImpl extends ConnectDB implements StoreDAO{
 	
@@ -25,6 +27,47 @@ public class StoreDAOImpl extends ConnectDB implements StoreDAO{
 			e.printStackTrace();
 		}
 		return 0;
+	}
+	
+	@Override
+	public Store getStoreById(int sId) {
+		String query = "Select * from store where [sId]= ?";
+		Connection conn = null;
+		PreparedStatement ps = null;
+	    ResultSet rs = null;
+		try {
+			conn = super.getConnection();
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, sId);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				return new Store(
+						rs.getInt(1),
+						rs.getString(2),
+						rs.getInt(3),
+						rs.getDate(4),
+						rs.getInt(5));
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+	        try {
+	            if (rs != null) {
+	                rs.close();
+	            }
+	            if (ps != null) {
+	                ps.close();
+	            }
+	            if (conn != null) {
+	                conn.close();
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return null;
 	}
 	
 	public static void main(String[] args) {
