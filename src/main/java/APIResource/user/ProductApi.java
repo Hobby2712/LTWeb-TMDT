@@ -97,12 +97,12 @@ public class ProductApi extends HttpServlet {
 			if (pathInfo.split("/").length > 1) {
 				if (pathInfo.equals("/latest")) {
 					// Lấy sản phẩm mới nhất
-					APIResponse<List<Product>> response = new APIResponse<>("success", false, "product", 
+					APIResponse<List<Product>> response = new APIResponse<>("success", false, "products", 
 							productDao.getLastestProduct());
 					sendJsonResponse(resp, response);
 				} else if (pathInfo.equals("/best-seller")) {
 					// Lấy sản phẩm bán chạy nhất
-					APIResponse<List<Product>> response = new APIResponse<>("success", false, "product",
+					APIResponse<List<Product>> response = new APIResponse<>("success", false, "products",
 							productDao.getBestSeller());
 					sendJsonResponse(resp, response);
 				} else {
