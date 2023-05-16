@@ -19,7 +19,7 @@ import DAO.UserDAO;
 import DaoImpl.UserDAOImpl;
 import Entity.Product;
 import Entity.User;
-import Entity.api.APIResponse;
+import Entity.API.APIResponse;
 
 @WebServlet(urlPatterns = {"/api/v1/login/*"})
 public class LoginApi extends HttpServlet{
@@ -55,6 +55,8 @@ public class LoginApi extends HttpServlet{
 			HttpSession session = req.getSession();
 			session.setAttribute("acc", u);
 			session.setMaxInactiveInterval(1000);
+			
+			
 			APIResponse<User> response = new APIResponse<>("Đăng nhập thành công", false, "user", u);
 			OutputStream outputStream = resp.getOutputStream();
 	        Gson gson = new Gson();

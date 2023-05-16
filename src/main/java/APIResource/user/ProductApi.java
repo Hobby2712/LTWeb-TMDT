@@ -27,7 +27,7 @@ import DaoImpl.CategoryDAOImpl;
 import DaoImpl.ProductDAOImpl;
 import Entity.Product;
 import Entity.User;
-import Entity.api.APIResponse;
+import Entity.API.APIResponse;
 import Util.Constant;
 
 @WebServlet(urlPatterns = { "/api/v1/products", "/api/v1/products/*" })

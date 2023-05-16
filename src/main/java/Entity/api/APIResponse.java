@@ -1,4 +1,4 @@
-package Entity.api;
+package Entity.API;
 
 import java.util.HashMap;
 import java.util.Map;

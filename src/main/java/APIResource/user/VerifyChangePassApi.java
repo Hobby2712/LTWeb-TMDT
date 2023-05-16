@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import DAO.UserDAO;
 import DaoImpl.UserDAOImpl;
 import Entity.User;
-import Entity.api.APIResponse;
+import Entity.API.APIResponse;
 
 @WebServlet(urlPatterns = {"/api/v1/verifyChangePass/*"})
 public class VerifyChangePassApi extends HttpServlet{
@@ -31,13 +31,14 @@ public class VerifyChangePassApi extends HttpServlet{
 	
 	protected void processRequest(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		resp.setContentType("text/html");
+		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
 		req.setCharacterEncoding("UTF-8");
-
-		String email = req.getParameter("email");
-		String user = req.getParameter("user");
-		String pass = req.getParameter("pass");
+		
+		String id = req.getParameter("id");
+		//String email = req.getParameter(u.getEmailById(id));
+		String user = req.getParameter(u.getUsernameById(id));
+		String pass = req.getParameter(u.getPasswordById(id));
 		String otp = req.getParameter("otp");
 		String otp_send = req.getParameter("otpSend");
 		
@@ -49,9 +50,10 @@ public class VerifyChangePassApi extends HttpServlet{
 		    outputStream.write(gson.toJson(response1).getBytes());
 		    outputStream.flush();
 		    
+		    req.setAttribute("id", id);
 			req.setAttribute("user", user);
         	req.setAttribute("pass", pass);
-        	req.setAttribute("email", email);
+        	//req.setAttribute("email", email);
         	req.setAttribute("otpSend", otp_send);
         	//req.setAttribute("action", "verify");
         	//req.setAttribute("cancel", "/Web/loginAccount");

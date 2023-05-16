@@ -240,6 +240,97 @@ public class UserDAOImpl extends ConnectDB implements UserDAO{
 		}
 		return userlist;
 	}
+	@Override 
+	public String getUsernameById(String index) {
+		//String username;
+		String query = "select [uName] from [user]\r\n"+"where [uId] =?";
+		try {
+			Connection conn = super.getConnection();
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1,index);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				return rs.getString(1);
+			}
+		
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
+		
+	}
+	public String getPasswordById(String index) {
+		//String username;
+		String query = "select [uPassword] from [user]\r\n"+"where [uId] =?";
+		try {
+			Connection conn = super.getConnection();
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1,index);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				return rs.getString(1);
+			}
+		
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
+		
+	}
+	public String getEmailById(String index) {
+		//String username;
+		String query = "select [uEmail] from [user]\r\n"+"where [uId] =?";
+		try {
+			Connection conn = super.getConnection();
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1,index);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				return rs.getString(1);
+			}
+		
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
+		
+	}
+	@Override
+	public String getUsernameByEmail(String index) {
+		String query = "select [uUname] from [user]\r\n"+"where [uEmail] =?";
+		try {
+			Connection conn = super.getConnection();
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1,index);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				return rs.getString(1);
+			}
+		
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
+	}
+	public List<String> getAllEmail() {
+		List<String> emailList = new ArrayList<>();
+		String query = "select uEmail from [user]\r\n";
+				
+		try {
+			Connection conn = super.getConnection();
+			PreparedStatement ps = conn.prepareStatement(query);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				emailList.add(rs.getString(1));
+				
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		return emailList;
+		
+	}
 	
 	@Override
 	public void addNewUser(User user) {
@@ -330,4 +421,8 @@ public class UserDAOImpl extends ConnectDB implements UserDAO{
 		UserDAO u = new UserDAOImpl();
 		System.out.print(u.searchByName("Dương", 1));
 	}
+
+	
+
+	
 }

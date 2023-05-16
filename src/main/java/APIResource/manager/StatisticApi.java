@@ -17,7 +17,7 @@ import DAO.ThongKeDAO;
 import DaoImpl.ThongKeDAOImpl;
 import Entity.Chart;
 import Entity.ThongKe;
-import Entity.api.APIResponse;
+import Entity.API.APIResponse;
 
 @WebServlet(urlPatterns = {"/api/v1/statistic", "/api/v1/statistic/*"})
 public class StatisticApi extends HttpServlet{

@@ -36,7 +36,7 @@ import Entity.Order;
 import Entity.OrderDetails;
 import Entity.Product;
 import Entity.User;
-import Entity.api.APIResponse;
+import Entity.API.APIResponse;
 import Util.Constant;
 
 @WebServlet(urlPatterns = {"/api/v1/addOrder/*"})

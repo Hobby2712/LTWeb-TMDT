@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import DAO.UserDAO;
 import DaoImpl.UserDAOImpl;
 import Entity.User;
-import Entity.api.APIResponse;
+import Entity.API.APIResponse;
 
 @WebServlet(urlPatterns = {"/api/v1/signup/*"})
 public class SignupApi extends HttpServlet{

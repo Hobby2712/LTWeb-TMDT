@@ -2,6 +2,7 @@ package APIResource.user;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,15 +18,15 @@ import DaoImpl.UserDAOImpl;
 import Entity.User;
 import Entity.API.APIResponse;
 
-@WebServlet(urlPatterns = { "/api/v1/changePassword/*" })
-public class ChangePasswordApi extends HttpServlet {
+@WebServlet(urlPatterns = { "/api/v1/forgotPassword/*" })
+public class ForgetPasswordApi extends HttpServlet {
 
 	/**
 	 * 
 	 */
-	private final UserDAOImpl u = new UserDAOImpl();
-	private static final long serialVersionUID = 1L;
 	
+	private static final long serialVersionUID = 1L;
+	private final UserDAOImpl u = new UserDAOImpl();
 	protected void processRequest(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		resp.setContentType("application/json");
@@ -34,40 +35,28 @@ public class ChangePasswordApi extends HttpServlet {
 
 		
 		
-		String id = req.getParameter("id");
+		//String id = req.getParameter("id");
 		
 		//String user = req.getParameter(u.getUsernameById(id));		
 		//String currentPass = req.getParameter(u.getPasswordById(id));
 		
-		String email = req.getParameter(u.getEmailById(id));
-		String oldpass = req.getParameter("oldPass");
-		String pass = req.getParameter("newPass");
-		String repass = req.getParameter("repeatNewPass");
-		
-		
-		
+		//String currentEmail = req.getParameter(u.getEmailById(id));
+		String email = req.getParameter("email");
 		try {
-			if (!oldpass.equals(u.getPasswordById(id))){
-				APIResponse<String> response = new APIResponse<>("Mật khẩu sai", true);
+			if (!compareEmail(email,u.getAllEmail())){
+				APIResponse<String> response = new APIResponse<>("Email không tồn tại", true);
 				OutputStream outputStream = resp.getOutputStream();
 			    Gson gson = new Gson();
 			    outputStream.write(gson.toJson(response).getBytes());
 			    outputStream.flush();
-				
-			}else if (!pass.equals(repass)) {
-				APIResponse<String> response = new APIResponse<>("Mật khẩu mới không trùng khớp", true);
-				OutputStream outputStream = resp.getOutputStream();
-			    Gson gson = new Gson();
-			    outputStream.write(gson.toJson(response).getBytes());
-			    outputStream.flush();
-				
+							
 			}else{
 				UserDAO dao = new UserDAOImpl();
 				// dc signup
 				String otp = dao.getRandom();
 				System.out.print(otp);
-				req.setAttribute("userId",id);
-				req.setAttribute("pass", pass);
+				//req.setAttribute("userId",id);
+				//req.setAttribute("pass", pass);
 				req.setAttribute("email",email);
 				req.setAttribute("otpSend", otp);
 				//req.setAttribute("action", "verifyChangePass");
@@ -96,5 +85,14 @@ public class ChangePasswordApi extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		processRequest(request, response);
+	}
+	
+	final boolean compareEmail(String email,List<String> allEmail) {
+		for (String item : allEmail) {
+			if(email.equals(item)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
