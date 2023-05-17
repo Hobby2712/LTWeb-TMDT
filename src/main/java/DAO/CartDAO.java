@@ -20,4 +20,5 @@ public interface CartDAO {
 	
 	public void deleteItemCart(int cartId, int pId);
 	void deleteAllItemCart(int cartId);
+	void insertCartItem(int cartId, int pId, int num);
 }
