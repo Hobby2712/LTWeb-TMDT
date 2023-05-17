@@ -16,6 +16,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import Connection.ConnectDB;
+import DAO.ProductDAO;
 import DAO.UserDAO;
 import Entity.User;
 
@@ -297,7 +298,7 @@ public class UserDAOImpl extends ConnectDB implements UserDAO{
 	}
 	@Override
 	public String getUsernameByEmail(String index) {
-		String query = "select [uUname] from [user]\r\n"+"where [uEmail] =?";
+		String query = "select [uName] from [user]\r\n"+"where [uEmail] like ?";
 		try {
 			Connection conn = super.getConnection();
 			PreparedStatement ps = conn.prepareStatement(query);
@@ -417,9 +418,10 @@ public class UserDAOImpl extends ConnectDB implements UserDAO{
 		}
 		return 0;
 	}
+	
 	public static void main(String[] args) {
-		UserDAO u = new UserDAOImpl();
-		System.out.print(u.searchByName("Dương", 1));
+		UserDAO p = new UserDAOImpl();
+		System.out.print(p.getEmailById(Integer.toString(1)));
 	}
 
 	

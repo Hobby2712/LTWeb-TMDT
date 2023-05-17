@@ -38,8 +38,6 @@ public class ChangePasswordApi extends HttpServlet {
 		
 		//String user = req.getParameter(u.getUsernameById(id));		
 		//String currentPass = req.getParameter(u.getPasswordById(id));
-		
-		String email = req.getParameter(u.getEmailById(id));
 		String oldpass = req.getParameter("oldPass");
 		String pass = req.getParameter("newPass");
 		String repass = req.getParameter("repeatNewPass");
@@ -68,11 +66,11 @@ public class ChangePasswordApi extends HttpServlet {
 				System.out.print(otp);
 				req.setAttribute("userId",id);
 				req.setAttribute("pass", pass);
-				req.setAttribute("email",email);
+				req.setAttribute("email",u.getEmailById(id));
 				req.setAttribute("otpSend", otp);
 				//req.setAttribute("action", "verifyChangePass");
 				//req.setAttribute("cancel", "/Web/profile");
-				dao.sendEmail(email, otp);
+				dao.sendEmail(u.getEmailById(id), otp);
 				//req.getRequestDispatcher("/views/web/otp.jsp").forward(req, resp);
 				
 				APIResponse<String> response = new APIResponse<>("Đã gửi OTP thành công", false,"otp",otp);

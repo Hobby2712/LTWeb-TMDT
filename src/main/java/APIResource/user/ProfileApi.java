@@ -84,16 +84,14 @@ public class ProfileApi extends HttpServlet{
 		HttpSession session = req.getSession();
 		User u = (User) session.getAttribute("acc");
 		
+		int id = Integer.parseInt(req.getParameter("id"));
 		String name = req.getParameter("name");
 		String adress = req.getParameter("address");
 		String phone = req.getParameter("phone");
 		
 		try {
-		dao.updateProfile(name, adress, phone, u.getId());
-		session.setAttribute("acc", dao.login(u.getUserName(), u.getPass()));
-		
-		
-		APIResponse<User> response = new APIResponse<>("Edit user thành công",false,"user",u);
+		dao.updateProfile(name, adress, phone, id);
+		APIResponse<User> response = new APIResponse<>("Edit user thành công",false);
         OutputStream outputStream = resp.getOutputStream();
         Gson gson = new Gson();
         outputStream.write(gson.toJson(response).getBytes());

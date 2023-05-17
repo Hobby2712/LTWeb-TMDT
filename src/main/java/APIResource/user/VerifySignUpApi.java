@@ -42,10 +42,10 @@ public class VerifySignUpApi extends HttpServlet{
 		String otp_send = req.getParameter("otpSend");
 		
 		if (!otp.equals(otp_send)) {
-			APIResponse<String> response1 = new APIResponse<>("OPT không trùng khớp", true);
+			APIResponse<String> response = new APIResponse<>("OPT không trùng khớp", true);
 			OutputStream outputStream = resp.getOutputStream();
 		    Gson gson = new Gson();
-		    outputStream.write(gson.toJson(response1).getBytes());
+		    outputStream.write(gson.toJson(response).getBytes());
 		    outputStream.flush();
 		    
 			//req.setAttribute("mess", "Mã OTP sai!");
@@ -63,10 +63,7 @@ public class VerifySignUpApi extends HttpServlet{
 			UserDAO dao = new UserDAOImpl();
 			dao.singup(user, pass, email);
 			User u = dao.login(user, pass);
-			HttpSession session = req.getSession();
-			session.setAttribute("acc", u);
-			session.setMaxInactiveInterval(1000);
-			resp.sendRedirect("home");
+			
 			
 			APIResponse<User> response = new APIResponse<>("Đăng kí thành công", false, "user", u);
 			OutputStream outputStream = resp.getOutputStream();

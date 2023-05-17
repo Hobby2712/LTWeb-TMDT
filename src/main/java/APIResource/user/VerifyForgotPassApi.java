@@ -38,7 +38,6 @@ public class VerifyForgotPassApi extends HttpServlet{
 		
 		String email = req.getParameter("email");
 		String newpass = req.getParameter("newpass");
-		String user = req.getParameter(u.getUsernameByEmail(email));
 		//String pass = req.getParameter("pass");
 		String otp = req.getParameter("otp");
 		String otp_send = req.getParameter("otpSend");
@@ -51,7 +50,6 @@ public class VerifyForgotPassApi extends HttpServlet{
 		    outputStream.write(gson.toJson(response1).getBytes());
 		    outputStream.flush();    
 		   // req.setAttribute("id", id);
-			req.setAttribute("user", user);
         	req.setAttribute("newpass", newpass);
         	req.setAttribute("email", email);
         	req.setAttribute("otpSend", otp_send);
@@ -60,7 +58,7 @@ public class VerifyForgotPassApi extends HttpServlet{
 			//req.getRequestDispatcher("/views/web/otp.jsp").forward(req, resp);
 		    
 		} else {
-			u.changPass(user,newpass);
+			u.changPass(email,newpass);
 			APIResponse<String> response = new APIResponse<>("OTP trùng khớp, đã đổi mật khẩu", false);
 			OutputStream outputStream = resp.getOutputStream();
 		    Gson gson = new Gson();

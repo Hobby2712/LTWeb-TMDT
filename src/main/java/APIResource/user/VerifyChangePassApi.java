@@ -36,9 +36,7 @@ public class VerifyChangePassApi extends HttpServlet{
 		req.setCharacterEncoding("UTF-8");
 		
 		String id = req.getParameter("id");
-		//String email = req.getParameter(u.getEmailById(id));
-		String user = req.getParameter(u.getUsernameById(id));
-		String pass = req.getParameter(u.getPasswordById(id));
+		String pass = req.getParameter("pass");
 		String otp = req.getParameter("otp");
 		String otp_send = req.getParameter("otpSend");
 		
@@ -51,7 +49,7 @@ public class VerifyChangePassApi extends HttpServlet{
 		    outputStream.flush();
 		    
 		    req.setAttribute("id", id);
-			req.setAttribute("user", user);
+			req.setAttribute("user", u.getUsernameById(id));
         	req.setAttribute("pass", pass);
         	//req.setAttribute("email", email);
         	req.setAttribute("otpSend", otp_send);
@@ -62,7 +60,7 @@ public class VerifyChangePassApi extends HttpServlet{
 			
 		    
 		} else {
-			u.changPass(user, pass);
+			u.changPass(u.getUsernameById(id), pass);
 			
 			APIResponse<String> response = new APIResponse<>("Thay đổi mật khẩu thành công", false, "newpass", pass);
 			OutputStream outputStream = resp.getOutputStream();
