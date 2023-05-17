@@ -296,6 +296,60 @@ public class UserDAOImpl extends ConnectDB implements UserDAO{
 		return null;
 		
 	}
+	public String getPhoneById(int index) {
+		//String username;
+		String query = "select [uPhone] from [user]\r\n"+"where [uId] =?";
+		try {
+			Connection conn = super.getConnection();
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1,index);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				return rs.getString(1);
+			}
+		
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
+		
+	}
+	public String getAddressById(int index) {
+		//String username;
+		String query = "select [uAddress] from [user]\r\n"+"where [uId] =?";
+		try {
+			Connection conn = super.getConnection();
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1,index);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				return rs.getString(1);
+			}
+		
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
+		
+	}
+	public String getFullNameById(int index) {
+		//String username;
+		String query = "select [uFullName] from [user]\r\n"+"where [uId] =?";
+		try {
+			Connection conn = super.getConnection();
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1,index);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				return rs.getString(1);
+			}
+		
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
+		
+	}
 	@Override
 	public String getUsernameByEmail(String index) {
 		String query = "select [uName] from [user]\r\n"+"where [uEmail] like ?";
@@ -313,6 +367,7 @@ public class UserDAOImpl extends ConnectDB implements UserDAO{
 		}
 		return null;
 	}
+	
 	public List<String> getAllEmail() {
 		List<String> emailList = new ArrayList<>();
 		String query = "select uEmail from [user]\r\n";

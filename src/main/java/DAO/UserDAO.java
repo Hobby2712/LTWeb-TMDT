@@ -13,7 +13,7 @@ public interface UserDAO {
 	public void sendEmail(String receiver_email, String content);
 	public String getRandom();
 	
-	public void updateProfile(String name, String adress, String phone, int id);
+	public void updateProfile(String name, String address, String phone, int id);
 	public void changPass(String user, String pass);
 	List<User> getAll(int index);
 	void addNewUser(User user);
@@ -25,4 +25,7 @@ public interface UserDAO {
 	String getPasswordById(String index);
 	List<String> getAllEmail();
 	String getUsernameByEmail(String index);
+	String getFullNameById(int index);
+	String getPhoneById(int index);
+	String getAddressById(int index);
 }

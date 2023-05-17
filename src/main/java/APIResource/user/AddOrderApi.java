@@ -26,10 +26,12 @@ import DAO.CartDAO;
 import DAO.CategoryDAO;
 import DAO.OrderDAO;
 import DAO.ProductDAO;
+import DAO.UserDAO;
 import DaoImpl.CartDAOImpl;
 import DaoImpl.CategoryDAOImpl;
 import DaoImpl.OrderDAOImpl;
 import DaoImpl.ProductDAOImpl;
+import DaoImpl.UserDAOImpl;
 import Entity.Cart;
 import Entity.Category;
 import Entity.Order;
@@ -48,24 +50,25 @@ public class AddOrderApi extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	OrderDAO dao = new OrderDAOImpl();
 	CartDAO cdao = new CartDAOImpl();
+	UserDAO udao = new UserDAOImpl();
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
 		req.setCharacterEncoding("UTF-8");
 		
-		HttpSession session = req.getSession();
-		User u = (User) session.getAttribute("acc");
+		String id = req.getParameter("id");
+		int intID = Integer.parseInt(id);
 		String name = req.getParameter("name");
 		String phone = req.getParameter("phone");
 		String address = req.getParameter("address");
 		try {
-			dao.insertOrder(u.getId(), name, phone, address);
-			List <Cart> a = cdao.getAllItemsCart(cdao.getCartIdByUId(u.getId()), 1);
+			dao.insertOrder(intID, name, phone, address);
+			List <Cart> a = cdao.getAllItemsCart(cdao.getCartIdByUId(intID), 1);
 			if(a!= null) {
 			for(Cart aitems : a) 
 				{
-				dao.insertOrderItems(dao.getOrderIdByUId(u.getId()), aitems.getP().getId(), aitems.getCount());
+				dao.insertOrderItems(dao.getOrderIdByUId(intID), aitems.getP().getId(), aitems.getCount());
 				APIResponse<Cart> response = new APIResponse<>("Thêm Order thành công", false, "cart", aitems);
 				OutputStream outputStream = resp.getOutputStream();
 			    Gson gson = new Gson();
@@ -73,7 +76,7 @@ public class AddOrderApi extends HttpServlet{
 			    outputStream.flush();
 				}		
 			
-			cdao.deleteAllItemCart(cdao.getCartIdByUId(u.getId()));
+			cdao.deleteAllItemCart(cdao.getCartIdByUId(intID));
 			//resp.sendRedirect("order");
 			}
 			else {
