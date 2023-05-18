@@ -66,7 +66,7 @@ public class StatisticApi extends HttpServlet{
 				index = "1";
 			}
 			APIResponse<List<ThongKe>> response = new APIResponse<>("success", false, "statistic",
-					thongKeDao.getAllThongKeByStore(Integer.parseInt(year), storeId, Integer.parseInt(index)));
+					thongKeDao.getAllThongKeByStoreMobile(Integer.parseInt(year), storeId));
 			sendJsonResponse(resp, response);
 			
 		} else {

@@ -174,6 +174,32 @@ public class OrderDAOImpl extends ConnectDB implements OrderDAO {
 		}
 		return orderlist;
 	}
+	
+	@Override
+	public List<OrderDetails> getAllOrderByStoreAndStatus(int storeId, int status) {
+		List<OrderDetails> orderlist = new ArrayList<>();
+		String query = "select * from orderdetail join product on orderdetail.productId = product.pId where product.storeId = ? and orderdetail.status = ?";
+		try {
+			Connection conn = super.getConnection();
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, storeId);
+			ps.setInt(2, status);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				OrderDetails order = new OrderDetails();
+				order.setId(rs.getInt(1));
+				order.setOrderId(rs.getInt(2));
+				order.setP(p.getProductByID(rs.getString(3)));
+				order.setCount(rs.getInt(4));
+				order.setTotalprice(rs.getInt(5));
+				order.setStatus(rs.getInt(6));
+				orderlist.add(order);
+			}
+		} catch (Exception e) {
+		}
+		return orderlist;
+	}
+
 
 	@Override
 	public List<OrderDetails> getAllOrderShipper() {
