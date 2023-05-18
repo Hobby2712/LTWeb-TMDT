@@ -3,9 +3,11 @@ package DaoImpl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import Connection.ConnectDB;
 import DAO.StoreDAO;
+import Entity.Store;
 
 public class StoreDAOImpl extends ConnectDB implements StoreDAO{
 	
@@ -46,7 +48,8 @@ public class StoreDAOImpl extends ConnectDB implements StoreDAO{
 						rs.getDate(4),
 						rs.getInt(5));
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		} finally {

@@ -37,7 +37,6 @@ public class OrderController extends HttpServlet{
 		req.setCharacterEncoding("UTF-8");
 		HttpSession session = req.getSession();
 		User u = (User) session.getAttribute("acc");
-		
 		if (u != null) {
 			List<OrderDetails> olist = order.getAllItemsOrder(u.getId());
 			req.setAttribute("oList", olist);

@@ -75,6 +75,9 @@ public class ProductApi extends HttpServlet {
 			} else if (categoryId2 != null && !categoryId2.isEmpty()) {
 				// Lấy danh sách sản phẩm theo danh mục
 				productList = productDao.getProductByCID2(categoryId2);
+			} else if (storeId != null && !storeId.isEmpty()) {
+				// Lấy danh sách sản phẩm theo store
+				productList = productDao.getProductByStoreId(Integer.parseInt(storeId));
 			} else {
 				// Lấy danh sách tất cả sản phẩm
 				productList = productDao.getAllProduct();
@@ -97,12 +100,12 @@ public class ProductApi extends HttpServlet {
 			if (pathInfo.split("/").length > 1) {
 				if (pathInfo.equals("/latest")) {
 					// Lấy sản phẩm mới nhất
-					APIResponse<Product> response = new APIResponse<>("success", false, "product",
+					APIResponse<List<Product>> response = new APIResponse<>("success", false, "products", 
 							productDao.getLastestProduct());
 					sendJsonResponse(resp, response);
 				} else if (pathInfo.equals("/best-seller")) {
 					// Lấy sản phẩm bán chạy nhất
-					APIResponse<Product> response = new APIResponse<>("success", false, "product",
+					APIResponse<List<Product>> response = new APIResponse<>("success", false, "products",
 							productDao.getBestSeller());
 					sendJsonResponse(resp, response);
 				} else {

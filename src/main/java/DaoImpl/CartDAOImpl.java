@@ -88,6 +88,20 @@ public class CartDAOImpl extends ConnectDB implements CartDAO {
         	e.printStackTrace();
         }		
 	}
+	@Override
+	public void insertCartItem(int cartId, int pId, int quantity) {
+		String query = "Insert into cartItems values(?,?,?,null)";
+        try {
+        	Connection conn = super.getConnection();
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, cartId);
+			ps.setInt(2, pId);
+			ps.setInt(3, quantity);
+            ps.executeUpdate();
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }		
+	}
 
 	@Override
 	public void insertCartItemDetail(int cartId, int pId, int quantity) {
