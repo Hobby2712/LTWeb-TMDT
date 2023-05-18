@@ -29,4 +29,6 @@ public interface ThongKeDAO {
 
 	List<ThongKe> getAllThongKeByStore(int year, int storeId, int index);
 
+	List<ThongKe> getAllThongKeByStoreMobile(int year, int storeId);
+
 }

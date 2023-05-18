@@ -47,9 +47,16 @@ public class OrderApi extends HttpServlet {
 						orderDao.getAllItemsOrder(Integer.parseInt(userId)));
 				sendJsonResponse(resp, response);
 			} else if (storeId != null && !storeId.isEmpty()) {
-				APIResponse<List<OrderDetails>> response = new APIResponse<>("success", false, "orders",
-						orderDao.getAllOrder(Integer.parseInt(storeId)));
-				sendJsonResponse(resp, response);
+				if(status != null && !status.isEmpty()) {
+					APIResponse<List<OrderDetails>> response = new APIResponse<>("success", false, "orders",
+							orderDao.getAllOrderByStoreAndStatus(Integer.parseInt(storeId), Integer.parseInt(status)));
+					sendJsonResponse(resp, response);
+				}else {
+					APIResponse<List<OrderDetails>> response = new APIResponse<>("success", false, "orders",
+							orderDao.getAllOrder(Integer.parseInt(storeId)));
+					sendJsonResponse(resp, response);
+				}
+				
 			} else if (id != null && !id.isEmpty() && status != null && !status.isEmpty()) {
 				try {
 					int orderId = Integer.parseInt(id);

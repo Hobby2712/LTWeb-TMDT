@@ -3,6 +3,7 @@ package DaoImpl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,6 +168,58 @@ public class ThongKeDAOImpl extends ConnectDB implements ThongKeDAO{
 			}
 		} catch (Exception e) {
 		}
+		return tlist;
+	}
+	
+	@Override
+	public List<ThongKe> getAllThongKeByStoreMobile(int year, int storeId) {
+		List<ThongKe> tlist = new ArrayList<>();
+		String query = "Select [user].uName, [order].uAddress, orderdetail.productId,orderdetail.count,[order].createAt, orderdetail.totalPrice\r\n"
+				+ "from [user] join [order] \r\n"
+				+ "on [user].[uId] = [order].[uId]\r\n"
+				+ "join orderdetail\r\n"
+				+ "on orderdetail.orderId = [order].orderId\r\n"
+				+ "join product \r\n"
+				+ "on orderdetail.productId = product.pId\r\n"
+				+ "where orderdetail.status = 4 and Year([order].createAt)= ? and product.storeId = ?\r\n"
+				+ "order by [order].createAt desc";
+		Connection conn = null;
+		PreparedStatement ps = null;
+	    ResultSet rs = null;
+		try {
+			conn = super.getConnection();
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, year);
+			ps.setInt(2, storeId);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				ThongKe t = new ThongKe();
+				t.setuName(rs.getString(1));
+				t.setuAddress(rs.getString(2));
+				t.setpId(rs.getInt(3));
+				t.setQuantity(rs.getInt(4));
+				t.setCreatDate(rs.getDate(5));
+				t.setTotal(rs.getInt(6));
+				tlist.add(t);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+	        try {
+	            if (rs != null) {
+	                rs.close();
+	            }
+	            if (ps != null) {
+	                ps.close();
+	            }
+	            if (conn != null) {
+	                conn.close();
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
 		return tlist;
 	}
 	

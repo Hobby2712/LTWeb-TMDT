@@ -21,4 +21,5 @@ public interface OrderDAO {
 	List<OrderDetails> getOrderByStatus(int status);
 	List<OrderDetails> getCountOrderStatus(int storeId);
 	boolean updateOrderStatusApi(int id, int status);
+	List<OrderDetails> getAllOrderByStoreAndStatus(int storeId, int status);
 }
